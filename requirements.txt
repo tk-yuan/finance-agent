@@ -1,0 +1,25 @@
+# 运行期依赖
+fastapi==0.135.1
+uvicorn[standard]==0.46.0
+python-multipart==0.0.32
+
+langchain==1.2.12
+langchain-core==1.2.18
+langchain-openai==1.1.11
+langchain-community==0.4.1
+langchain-text-splitters==1.1.1
+langgraph==1.1.2
+
+chromadb==1.5.9
+langchain-chroma==1.1.0
+
+sqlalchemy==2.0.52
+pydantic==2.12.5
+pydantic-settings==2.12.0
+python-dotenv==1.2.1
+httpx==0.28.1
+
+# 文档与图片处理
+pypdf==6.19.0          # 读取 PDF 发票的文字层
+openpyxl==3.1.5        # 导出 Excel 报表
+pillow==12.3.0         # 图片处理（发票识别）

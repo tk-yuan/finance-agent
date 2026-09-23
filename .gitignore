@@ -1,0 +1,46 @@
+# ============================================================
+# ⚠️ 最重要的一条：.env 里有 API Key 和数据库配置
+#    绝对不能提交到 GitHub。财务项目尤其要注意。
+# ============================================================
+.env
+.env.local
+.env.*.local
+
+# ---------- 数据（账本、向量库、凭证附件）----------
+# 这些是企业私有数据，也不该进仓库
+data/
+!data/corpus/
+!data/samples/
+chroma_db/
+*.sqlite3
+*.db
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+.venv/
+venv/
+
+# ---------- 编辑器 / 系统 ----------
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ---------- 截图原图（正式的已放进 docs/screenshots/）----------
+图/
+screenshots/
+*.zip
+
+# ---------- 日志 ----------
+logs/
+*.log
+
+# ---------- 保留：截图要进仓库（README 里引用）----------
+!docs/screenshots/*.png
