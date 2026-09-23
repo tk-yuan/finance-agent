@@ -36,13 +36,12 @@ venv/
 Thumbs.db
 
 # ---------- 截图原图（正式的已放进 docs/screenshots/）----------
-图/
-screenshots/
+# 注意开头的斜杠：必须写 /screenshots/ 而不是 screenshots/
+# 没斜杠会匹配【任意层级】的 screenshots，把 docs/screenshots/ 也误伤，
+# 导致 README 引用的截图上不了仓库（踩过这个坑）。
+/screenshots/
 *.zip
 
 # ---------- 日志 ----------
 logs/
 *.log
-
-# ---------- 保留：截图要进仓库（README 里引用）----------
-!docs/screenshots/*.png
