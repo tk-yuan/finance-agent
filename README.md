@@ -178,23 +178,61 @@ http://127.0.0.1:8010
 
 Windows 用户可直接双击 `启动.bat`。
 
+### 用 Docker 跑（推荐）
+
+```bash
+# 在项目根目录执行
+docker compose -f deploy/docker-compose.yml up -d --build
+
+# 浏览器打开
+http://localhost:8000
+```
+
+> **国内网络提示**：拉 `python:3.13-slim` 基础镜像可能很慢或被墙，
+> 建议先在 Docker Desktop → Settings → Docker Engine 里配镜像加速器：
+> ```json
+> "registry-mirrors": ["https://docker.m.daocloud.io", "https://docker.1ms.run"]
+> ```
+> pip 装依赖已内置清华源，无需额外配置。
+
 ## 目录结构
 
 ```
-app/
-├── main.py              FastAPI 入口（建表、挂路由、静态资源）
-├── core/                配置 / 模型工厂 / 会计科目 / 异常
-├── db/                  数据模型（账目、往来单位、会话、结账…）
-├── agents/              Agent 装配 + LangGraph 对账编排
-├── tools/               Agent 可调用的工具（9 个）
-├── rag/                 企业私有知识库（科目字典检索）
-├── services/            业务逻辑（与 Web 框架无关）
-│   ├── invoice_service.py     发票识别
-│   ├── closing_service.py     月末结账
-│   ├── checkup_service.py     现金盘点 / 银行调节 / 对账单
-│   └── ...
-├── api/v1/              HTTP 接口（12 个模块）
-└── web/                 前端工作台
+finance-agent/
+├── app/                     应用代码
+│   ├── main.py              FastAPI 入口（建表、挂路由、静态资源）
+│   ├── core/                配置 / 模型工厂 / 会计科目 / 异常
+│   ├── db/                  数据模型（账目、往来单位、会话、结账…）
+│   ├── agents/              Agent 装配 / 对账编排 / 分析多智能体
+│   ├── tools/               Agent 可调用的工具（11 个）
+│   ├── rag/                 企业私有知识库（科目字典检索）
+│   ├── services/            业务逻辑（与 Web 框架无关）
+│   │   ├── invoice_service.py     发票识别
+│   │   ├── closing_service.py     月末结账
+│   │   ├── checkup_service.py     现金盘点 / 银行调节 / 对账单
+│   │   └── ...
+│   ├── api/v1/              HTTP 接口（12 个模块）
+│   └── web/                 前端工作台（HTML + ECharts）
+│
+├── tests/                   38 个单元测试
+├── scripts/                 工具脚本（生成演示数据、导入账单）
+├── deploy/                  Docker 部署
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── docs/screenshots/        界面截图
+├── data/                    数据
+│   ├── corpus/              RAG 语料（随仓库提供）
+│   ├── samples/             示例数据（随仓库提供）
+│   ├── ledger.db            账本（运行时生成，已忽略）
+│   ├── chroma/              向量库（运行时生成，已忽略）
+│   └── attachments/         凭证附件（运行时生成，已忽略）
+│
+├── .env / .env.example      配置与密钥模板
+├── .gitignore / .dockerignore
+├── requirements.txt         依赖清单
+├── pytest.ini               测试配置
+├── README.md
+└── 启动.bat                 Windows 一键启动
 ```
 
 ## 核心设计取舍（面试可讲）
@@ -334,4 +372,6 @@ pytest -q
 - **没有真实角色权限**：出纳/会计靠界面区分，没有登录和权限控制
 - **没有多账套**：目前一套账，代账公司场景需要支持多企业隔离
 - **纳税申报简化**：只估算了所得税，没有完整的增值税申报
-- **Docker 未验证**：Dockerfile 已写好，但还没实际构建测试过
+- **Docker 配置已就绪，本机未完成构建验证**：`deploy/` 下的 Dockerfile 与
+  compose 已按生产标准写好（多阶段依赖缓存、非 root 用户、HEALTHCHECK、时区），
+  但本机 Docker Desktop 存在 socket 锁的已知问题未能实际构建。国内需先配镜像加速器。

@@ -1,0 +1,24 @@
+# 使用方式（在项目根目录执行）：
+#   docker compose -f deploy/docker-compose.yml up -d --build
+#
+# 或者先 cd 到 deploy/ 再执行 docker compose up -d
+#
+# 说明：所有相对路径都是相对于【本文件所在目录】(deploy/)，
+#       所以用 ../ 指回项目根目录。
+
+services:
+  app:
+    build:
+      context: ..              # 构建上下文 = 项目根目录（Dockerfile 要能看到 app/）
+      dockerfile: deploy/Dockerfile
+    image: finance-agent:latest
+    container_name: finance-agent
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env                # 读项目根目录的 .env
+    volumes:
+      # 账本、向量库、凭证附件持久化到宿主机——容器删了数据还在
+      - ../data:/app/data
+    restart: unless-stopped
+    # 健康检查已在 Dockerfile 里定义（HEALTHCHECK），这里不用重复写
